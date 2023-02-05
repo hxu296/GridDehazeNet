@@ -13,7 +13,7 @@ import torch.nn.functional as F
 import torchvision.utils as utils
 from math import log10
 from skimage import measure
-
+import os
 
 def to_psnr(dehaze, gt):
     mse = F.mse_loss(dehaze, gt, reduction='none')
@@ -85,8 +85,13 @@ def save_image(dehaze, image_name, category):
     dehaze_images = torch.split(dehaze, 1, dim=0)
     batch_num = len(dehaze_images)
 
+    results_dir = './{}_results'.format(category)
+
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+
     for ind in range(batch_num):
-        utils.save_image(dehaze_images[ind], './{}_results/{}'.format(category, image_name[ind].split(".")[-2] + '.png'))
+        utils.save_image(dehaze_images[ind], os.path.join(results_dir, image_name[ind].split(".")[-2] + '.png'))
 
 
 def print_log(epoch, num_epochs, one_epoch_time, train_psnr, val_psnr, val_ssim, category):

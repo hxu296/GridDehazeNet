@@ -108,7 +108,7 @@ Follow the instruction in [testing](#quick-start) to modify the default settings
 
 ### 3. Predicting
 ```
-python3 predict.py -target_dir ./data/hsts -checkpoint outdoor_haze_best_3_6
+$ python3 predict.py -target_dir ./data/hsts -checkpoint outdoor_haze_best_3_6
 ```
 
 ## Cite

@@ -70,13 +70,23 @@ def validation(net, val_data_loader, device, category, save_tag=False):
     avr_ssim = sum(ssim_list) / len(ssim_list)
     return avr_psnr, avr_ssim
 
+def predict(net, val_data_loader, device, category, save_tag=False):
+    for batch_id, val_data in enumerate(val_data_loader):
+            with torch.no_grad():
+                img, image_name = val_data
+                img = img.to(device)
+                dehaze = net(img)
+            print(f'Processed image:\t{image_name}')
+            # --- Save image --- #
+            if save_tag:
+                save_image(dehaze, image_name, category)
 
 def save_image(dehaze, image_name, category):
     dehaze_images = torch.split(dehaze, 1, dim=0)
     batch_num = len(dehaze_images)
 
     for ind in range(batch_num):
-        utils.save_image(dehaze_images[ind], './{}_results/{}'.format(category, image_name[ind][:-3] + 'png'))
+        utils.save_image(dehaze_images[ind], './{}_results/{}'.format(category, image_name[ind].split(".")[-2] + '.png'))
 
 
 def print_log(epoch, num_epochs, one_epoch_time, train_psnr, val_psnr, val_ssim, category):
